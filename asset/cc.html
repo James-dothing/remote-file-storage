@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cookie Editor</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#f4f4f4;
+    padding:40px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+input{
+    padding:8px;
+    margin:5px;
+}
+
+button{
+    padding:8px 12px;
+    margin:5px;
+    cursor:pointer;
+}
+
+.cookie{
+    display:flex;
+    justify-content:space-between;
+    padding:8px;
+    border-bottom:1px solid #ddd;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Cookie Editor</h2>
+
+<div>
+<input id="name" placeholder="cookie name">
+<input id="value" placeholder="cookie value">
+<button onclick="setCookie()">Set Cookie</button>
+<button onclick="loadCookies()">Refresh</button>
+</div>
+
+<hr>
+
+<div id="cookies"></div>
+
+</div>
+
+<script>
+
+function parseCookies(){
+    let cookies = document.cookie.split("; ");
+    let result = [];
+
+    cookies.forEach(c=>{
+        let parts = c.split("=");
+        result.push({
+            name: parts[0],
+            value: parts.slice(1).join("=")
+        });
+    });
+
+    return result;
+}
+
+function loadCookies(){
+
+    let container = document.getElementById("cookies");
+    container.innerHTML = "";
+
+    let cookies = parseCookies();
+
+    cookies.forEach(c=>{
+        let div = document.createElement("div");
+        div.className="cookie";
+
+        div.innerHTML = `
+            <span><b>${c.name}</b> = ${c.value}</span>
+            <button onclick="deleteCookie('${c.name}')">Delete</button>
+        `;
+
+        container.appendChild(div);
+    });
+}
+
+function setCookie(){
+
+    let name = document.getElementById("name").value;
+    let value = document.getElementById("value").value;
+
+    document.cookie = `${name}=${value}; path=/`;
+
+    loadCookies();
+}
+
+function deleteCookie(name){
+
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+
+    loadCookies();
+}
+
+loadCookies();
+
+</script>
+
+</body>
+</html>

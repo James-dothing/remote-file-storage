@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: #f5f6f8;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.container {
+    width: 95vw;
+    max-width: 800px;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    background: white;
+    margin: 12px 0;
+    padding: 16px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    color: #222;
+    font-size: 16px;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08); /* shadow :D */
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.icon-btn {
+    width: 32px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+
+    background-size: cover;
+    background-position: center;
+}
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+}
+
+.download-btn {
+    background-image: url("/asset?a=download-button");
+}
+
+.rename-btn {
+    background-image: url("/asset?a=rename-button");
+}
+
+.delete-btn {
+    background-image: url("/asset?a=delete-button");
+}
+
+#uploadBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+
+    border: none;
+    cursor: pointer;
+
+    background: url("/asset?a=upload-button") no-repeat center;
+    background-size: cover;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    z-index: 999;
+}
+
+#uploadBtn:active {
+    transform: scale(0.95);
+}
+
+#mkdirBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 90px; /* left of upload button */
+
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+
+    border: none;
+    cursor: pointer;
+
+    background: url("/asset?a=mkdir-button") no-repeat center;
+    background-size: cover;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+    z-index: 999;
+}
+
+#mkdirBtn:active {
+    transform: scale(0.95);
+}
+
+.file-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.file-icon {
+    width: 28px;
+    height: 28px;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<ul id="linkList"><li style="display: none;" id="empty">this folder is empty</li></ul>
+</div>
+<button id="mkdirBtn"></button>
+<input type="file" id="fileUpload" multiple style="display:none">
+<div id="uploadStatus" style="
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    background: white;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 14px;
+    display: none;
+    z-index: 999;
+"></div>
+<button id="uploadBtn"></button>
+<script>
+const uploadBtn = document.getElementById("uploadBtn")
+const fileInput = document.getElementById("fileUpload")
+const lithium = document.getElementById("linkList")
+const empty = document.getElementById("empty")
+
+function de(str) {
+  str = str
+    .replace(/-/g, "+")
+    .replace(/_/g, "/")
+
+  str += "=".repeat((4 - str.length % 4) % 4)
+
+  const binary = atob(str)
+
+  const bytes = Uint8Array.from(binary, c => c.charCodeAt(0))
+
+  return new TextDecoder().decode(bytes)
+}
+
+function en(str) {
+  const bytes = new TextEncoder().encode(str);
+  let binary = ""
+  
+  bytes.forEach(b => binary += String.fromCharCode(b))
+  
+  let base64 = btoa(binary)
+
+  return base64
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "")
+}
+
+function getFileIcon(name, isFile) {
+    if (!isFile) return "/asset?a=folder-icon"
+
+    const ext = name.split(".")[name.split(".").length-1].toLowerCase()
+
+    const image = ["png","jpg","jpeg","gif","webp","bmp"]
+    const video = ["mp4","mkv","webm","avi","mov"]
+    const audio = ["mp3","wav","ogg","flac","aac","m4a"]
+    // const doc   = ["pdf","doc","docx","xls","xlsx","ppt","pptx","txt"]
+    // const exec  = ["exe","sh","py","js","cpp","c","java","rb"]
+    // const comp  = ["zip","rar","tar","gz","7z"]
+
+    if (image.includes(ext)) {return "/asset?a=image-file-icon"}
+    if (video.includes(ext)) {return "/asset?a=video-file-icon"}
+    if (audio.includes(ext)) {return "/asset?a=audio-file-icon"}
+    // if (doc.includes(ext))   {return "/asset?a=doc-file-icon"}
+    // if (exec.includes(ext))  {return "/asset?a=exec-file-icon"}
+    // if (comp.includes(ext))  {return "/asset?a=compress-file-icon"}
+
+    return "/asset?a=default-file-icon"
+}
+
+uploadBtn.onclick = () => {
+    fileInput.click()
+};
+
+fileInput.onchange = () => {
+    const files = fileInput.files;
+    if (!files.length) return
+
+    const formData = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+        formData.append("file", files[i])
+    }
+
+    const xhr = new XMLHttpRequest() //born to use fetch forced to use xmlhttprequest :(
+    const status = document.getElementById("uploadStatus")
+
+    const params = new URLSearchParams(window.location.search)
+
+    const path = params.get("p")
+
+    xhr.open("POST", path ? "/file?p=" + path : "/file")
+
+    status.style.display = "block"
+    status.textContent = `Uploading ${files.length} file... 0%`
+
+    xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+            const percent = Math.round((e.loaded / e.total) * 100)
+            status.textContent = `Uploading ${files.length} file(s)... ${percent}%`
+        }
+    }
+
+    xhr.onload = () => {
+        status.textContent = "upload completed"
+        setTimeout(() => location.reload(), 1000)
+    }
+
+    xhr.onerror = () => {
+        status.textContent = "upload failed"
+        setTimeout(() => location.reload(), 1000)
+    }
+
+    xhr.send(formData)
+}
+
+const mkdirBtn = document.getElementById("mkdirBtn")
+
+mkdirBtn.onclick = async () => {
+    const name = prompt("Folder name:")
+    if (!name) {return}
+    
+    const encoded = en(name)
+
+    const params = new URLSearchParams(window.location.search)
+    const path = params.get("p")
+    const url = path ? `/file?p=${path}&f=${encoded}` : `/file?f=${encoded}`
+
+    const res = await fetch(url, {method: "POST"})
+
+    location.reload()
+}
+
+function addItem(title, redirectUrl, fileUrl, isFile) {
+
+    const ul = document.getElementById("linkList")
+    const li = document.createElement("li")
+
+    const left = document.createElement("div")
+    left.className = "file-left"
+
+    const icon = document.createElement("div")
+    icon.className = "file-icon"
+    icon.style.backgroundImage = `url("${getFileIcon(title, isFile)}")`
+
+    const text = document.createElement("span")
+    text.textContent = title
+
+    left.appendChild(icon)
+    left.appendChild(text)
+
+    const buttonContainer = document.createElement("div")
+    buttonContainer.className = "buttons"
+
+    if (isFile) {
+        const downloadBtn = document.createElement("a")
+        downloadBtn.href = fileUrl
+        downloadBtn.className = "icon-btn download-btn"
+
+        downloadBtn.onclick = (e) => e.stopPropagation()
+
+        buttonContainer.appendChild(downloadBtn)
+    }
+
+    const renameBtn = document.createElement("button")
+    renameBtn.className = "icon-btn rename-btn"
+
+    renameBtn.onclick = async function(event) {
+        event.stopPropagation()
+
+        const newName = prompt("Enter new name:", title)
+        if (!newName || newName === title) return
+
+        try {
+            const encodedName = en(newName)
+            const url = fileUrl + (fileUrl.includes("?") ? "&" : "?") + "n=" + encodedName
+
+            await fetch(url, {method: "PATCH"})
+            location.reload()
+        } catch {
+            alert("Rename error")
+        }
+    }
+
+    const deleteBtn = document.createElement("button")
+    deleteBtn.className = "icon-btn delete-btn"
+
+    deleteBtn.onclick = async function(event) {
+        event.stopPropagation()
+
+        if (!confirm("Delete this file?")) return
+
+        await fetch(fileUrl, { method: "DELETE" })
+        li.remove()
+        if (lithium.childElementCount == 1) {
+          empty.style.display = "block"
+        }
+    }
+
+    buttonContainer.appendChild(renameBtn)
+    buttonContainer.appendChild(deleteBtn)
+
+    li.onclick = function() {
+        window.location.href = redirectUrl
+    }
+
+    li.appendChild(left)
+    li.appendChild(buttonContainer)
+
+    ul.appendChild(li)
+}
+
+async function S() {
+    const params = new URLSearchParams(window.location.search)
+
+    let path = params.get("p")
+
+    const res = await fetch(path ? "/file?p=" + path : "/file")
+
+    path = path ? de(path) + "/" : ""
+
+    const text = await res.json()
+    console.log(text)
+    text["children"]["folders"].forEach((v,i) => {
+        addItem(v, "/?p=" + en(path+v), "/file?p=" + en(path+v), false)
+    })
+    text["children"]["files"].forEach((v,i) => {
+        addItem(v, "/view?p=" + en(path+v), "/file?p=" + en(path+v), true)
+    })
+
+    if (lithium.childElementCount == 1) {
+        empty.style.display = "block"
+    }
+}
+
+S()
+</script>
+
+<style>
+    @font-face {
+        font-family: "NotoThai";
+        src: url("/asset?a=NotoSansThai") format("truetype");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Ubuntu";
+        src: url("/asset?a=Ubuntu") format("truetype");
+        font-display: swap;
+    }
+
+    * {
+        font-family:
+            "Ubuntu",
+            "NotoThai",
+            system-ui,
+            sans-serif;
+    }
+</style>
+
+</body>
+</html>
