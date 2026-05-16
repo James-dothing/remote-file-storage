@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: #f5f6f8;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    min-height: 100vh;
+}
+
+.container {
+    width: 95vw;
+    max-width: 500px;
+}
+
+.card {
+    background: white;
+    padding: 24px;
+    border-radius: 18px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #222;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+}
+
+input {
+    width: 100%;
+    box-sizing: border-box;
+
+    border: none;
+    outline: none;
+
+    padding: 14px 16px;
+
+    border-radius: 12px;
+
+    background: #f0f2f5;
+
+    font-size: 16px;
+    color: #222;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+
+    border-radius: 12px;
+
+    padding: 14px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    background: white;
+    color: #222;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+    transition: 0.15s;
+}
+
+button:active {
+    transform: scale(0.97);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <div class="title">login</div>
+        <div class="subtitle">
+            please enter your token in order to access the storage
+        </div>
+
+        <input type="text" id="tokenInput">
+
+        <button id="saveBtn">login</button>
+    </div>
+</div>
+
+<script>
+function setCookie(name, value, days = 365) {
+    const expires = new Date(
+        Date.now() + days * 86400000
+    ).toUTCString();
+
+    document.cookie =
+        `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+}
+
+document
+    .getElementById("saveBtn")
+    .addEventListener("click", () => {
+
+        const token = document
+            .getElementById("tokenInput")
+            .value
+            .trim();
+
+        setCookie("token", token);
+
+        location.reload();
+    });
+
+document
+    .getElementById("tokenInput")
+    .addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+            document.getElementById("saveBtn").click();
+        }
+    });
+</script>
+
+<style>
+    @font-face {
+        font-family: "NotoThai";
+        src: url("/asset?a=NotoSansThai") format("truetype");
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Ubuntu";
+        src: url("/asset?a=Ubuntu") format("truetype");
+        font-display: swap;
+    }
+
+    * {
+        font-family:
+            "Ubuntu",
+            "NotoThai",
+            system-ui,
+            sans-serif;
+    }
+</style>
+
+</body>
+</html>
