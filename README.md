@@ -18,9 +18,9 @@ like the name suggest, this is a remote file storage
 - library:
   - flask — (`python -m pip install flask` or in mac/linux `python3 -m pip install flask`)
   - window:
-    - waitress — (`pip install waitress`)
+    - waitress — (`python -m pip install waitress`)
   - MacOs/linux:  
-    - gunicorn — (`python -m pip install gunicorn` or in mac/linux `python3 -m pip install gunicorn`)
+    - gunicorn — (`python3 -m pip install gunicorn`)
 
 # **WAIT!**
 before doing anything make sure to edit the auth key in the main.py to make sure that no one can access to the file storage except you and trusted people
