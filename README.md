@@ -1,4 +1,4 @@
-# **remote-file-storage**
+# **Remote-file-storage**
 like the name suggest, this is a remote file storage 
 
 ## **Features:**
@@ -16,10 +16,11 @@ like the name suggest, this is a remote file storage
 ## **Requirements:**
 - python — (3.12+)
 - library:
-  - flask — (`python -m pip install flask` or in mac/linux `python3 -m pip install flask`)
   - window:
+    - flask — (`python -m pip install flask`)
     - waitress — (`python -m pip install waitress`)
-  - MacOs/linux:  
+  - MacOs/linux:
+    - flask — (`python3 -m pip install flask`)
     - gunicorn — (`python3 -m pip install gunicorn`)
 
 # **WAIT!**
@@ -34,7 +35,7 @@ before doing anything make sure to edit the auth key in the main.py to make sure
 - linux:
   - `sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800`
 
-## **how do i access it?**
+## **How do I access it?**
 - window:
   - type `ipconfig` into cmd
   - find "`IPv4 Address. . . . . . . . . . . :`"
@@ -51,3 +52,8 @@ before doing anything make sure to edit the auth key in the main.py to make sure
   - enter that into your broswer
   - enter your auth token
   - done! havee fun!
+
+## **Notes:**
+- yes i finally used linux it was great honestly but i'm gonna use it for servering only cuz i have many app many games that only compatible with window
+- i know that many many people have already made project like these even better than mine and i don't care i had fun making it and i'm proud of it
+- licensing under MIT
