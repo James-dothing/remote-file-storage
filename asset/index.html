@@ -200,7 +200,7 @@ function getFileIcon(name, isFile) {
     const video = ["mp4","mkv","webm","avi","mov"]
     const audio = ["mp3","wav","ogg","flac","aac","m4a"]
     // const doc   = ["pdf","doc","docx","xls","xlsx","ppt","pptx","txt"]
-    // const exec  = ["exe","sh","py","js","cpp","c","java","rb"]
+    // const exec  = ["exe","sh","py","js","cpp","c","java","rb", "lua", "rs"]
     // const comp  = ["zip","rar","tar","gz","7z"]
 
     if (image.includes(ext)) {return "/asset?a=image-file-icon"}
@@ -357,7 +357,8 @@ function addItem(title, redirectUrl, fileUrl, isFile) {
 
 async function S() {
     const params = new URLSearchParams(window.location.search)
-
+    const video = ["mp4","mkv","webm","avi","mov"]
+    const audio = ["mp3","wav","ogg","flac","aac","m4a"]
     let path = params.get("p")
 
     const res = await fetch(path ? "/file?p=" + path : "/file")
@@ -370,7 +371,11 @@ async function S() {
         addItem(v, "/?p=" + en(path+v), "/file?p=" + en(path+v), false)
     })
     text["children"]["files"].forEach((v,i) => {
-        addItem(v, "/view?p=" + en(path+v), "/file?p=" + en(path+v), true)
+	const ext = v.split(".")[v.split(".").length-1].toLowerCase()
+	let ll = "/view?p="
+	if (video.includes(ext)) {ll = "/mediaplayer?t=v&p="}
+	else if (audio.includes(ext)) {ll = "/mediaplayer?t=a&p="}
+        addItem(v, ll + en(path+v), "/file?p=" + en(path+v), true)
     })
 
     if (lithium.childElementCount == 1) {
