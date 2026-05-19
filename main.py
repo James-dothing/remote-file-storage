@@ -33,10 +33,14 @@ if not os.path.exists("asset"):
 assets = {}
 index = ""
 ce = ""
+ap = ""
+vp = ""
 
 if FAST_ASSET_LOADING:
     index = open("asset/index.html", "r",  encoding="utf-8").read()
     ce = open("asset/login.html", "r",  encoding="utf-8").read()
+    ap = open("asset/audioplayer.html", "r",  encoding="utf-8").read()
+    vp = open("asset/vidplayer.html", "r",  encoding="utf-8").read()
     for file in os.listdir("asset"):
         if file.split(".")[1] == "png" or file.split(".")[1] == "ttf":
             assets[file] = open("asset/" + file, "rb").read()
@@ -84,6 +88,22 @@ def view():
         return flask.send_file(path_to_des)
     
     flask.abort(400, "no")
+
+@app.route("/mediaplayer")
+def mplayer():
+    mediatype = flask.request.args.get("t") # v = video a = audio
+    if not mediatype:
+        flask.abort(400, "missing media type arg in the link")
+    if mediatype == "a":
+        if FAST_ASSET_LOADING:
+            return ap, 200
+        else:
+            return open("asset/audioplayer.html", "r",  encoding="utf-8").read()
+    else:
+        if FAST_ASSET_LOADING:
+            return vp, 200
+        else:
+            return open("asset/vidplayer.html", "r", encoding="utf-8").read()
 
 @app.route("/asset")
 def get_asset():
