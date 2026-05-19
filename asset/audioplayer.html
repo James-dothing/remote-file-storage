@@ -1,0 +1,15 @@
+<html>
+	<head>
+		<meta name="viewport" content="width-device-width">
+	</head>
+	<body>
+		<audio id="main" controls loop name="media"></audio>
+		<script>
+			const p = new URLSearchParams(window.location.search).get("p")
+            const main = document.getElementById("main")
+            if (p) {
+				main.src = `/view?p=${p}`
+			}
+		</script>
+	</body>
+</html>

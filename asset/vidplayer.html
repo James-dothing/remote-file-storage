@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<meta name="viewport" content="width-device-width, initial-scale=1.0">
+	</head>
+	<style>
+        body {
+            margin: 0;
+            background: black;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+        }
+	</style>
+	<body>
+		<video id="main" controls loop name="media" style="width:100%; height:auto; max-width: 100vw; max-height: 100vh;"></video>
+		<script>
+            const p = new URLSearchParams(window.location.search).get("p")
+            const main = document.getElementById("main")
+            if (p) {
+                main.src = `/view?p=${p}`
+            }
+        </script>
+	</body>
+</html>
