@@ -17,7 +17,9 @@ like the name suggest, this is a remote file storage
 - python — (3.12+)
 - library:
   - window:
-    - flask — (`python -m pip install flask`)
+    - flask — (```bash
+                        python -m pip install flask
+                        ```)
     - waitress — (`python -m pip install waitress`)
   - MacOs/linux:
     - flask — (`python3 -m pip install flask`)
