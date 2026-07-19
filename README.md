@@ -29,21 +29,21 @@ before doing anything make sure to edit the auth key in the main.py to make sure
 ## **Run:**
 - Window:
   - ```bash
-python -m waitress --host=0.0.0.0 --port=80 --threads=4 main:app
-```
+    python -m waitress --host=0.0.0.0 --port=80 --threads=4 main:app
+    ```
   - make sure you run cmd as administrator
 - MacOs:
   - ```bash
-sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
-```
+    sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+    ```
 - linux:
   - ```bash
-sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
-```
+    sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+    ```
 - termux:
   - ```bash
-python3 -m gunicorn -w 4 -b 0.0.0.0:8080 main:app --timeout 1800
-```
+    python3 -m gunicorn -w 4 -b 0.0.0.0:8080 main:app --timeout 1800
+    ```
 
 ## **How do I access it?**
 - window:
