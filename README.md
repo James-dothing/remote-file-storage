@@ -28,12 +28,22 @@ before doing anything make sure to edit the auth key in the main.py to make sure
 
 ## **Run:**
 - Window:
-  - `python -m waitress --host=0.0.0.0 --port=80 --threads=4 main:app`
+  - ```bash
+python -m waitress --host=0.0.0.0 --port=80 --threads=4 main:app
+```
   - make sure you run cmd as administrator
 - MacOs:
-  - uhhhhh i've never used macos before but i'm guessing `sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800`
+  - ```bash
+sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+```
 - linux:
-  - `sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800`
+  - ```bash
+sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+```
+- termux:
+  - ```bash
+python3 -m gunicorn -w 4 -b 0.0.0.0:8080 main:app --timeout 1800
+```
 
 ## **How do I access it?**
 - window:
@@ -52,7 +62,8 @@ before doing anything make sure to edit the auth key in the main.py to make sure
   - enter that into your broswer
   - enter your auth token
   - done! havee fun!
-
+- termux:
+  - do the same with linux but type ifconfig instead and add `:8080` and the back of the ip
 ## **Notes:**
 - yes i finally used linux it was great honestly but i'm gonna use it for servering only cuz i have many app many games that only compatible with window
 - i know that many many people have already made project like these even better than mine and i don't care i had fun making it and i'm proud of it
