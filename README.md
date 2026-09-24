@@ -34,15 +34,15 @@ before doing anything make sure to edit the auth key in the main.py to make sure
   - make sure you run cmd as administrator
 - MacOs:
   - ```bash
-    sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+    sudo TMPDIR="$PWD/tmp" python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
     ```
 - linux:
   - ```bash
-    sudo python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
+    sudo TMPDIR="$PWD/tmp" python3 -m gunicorn -w 4 -b 0.0.0.0:80 main:app --timeout 1800
     ```
 - termux:
   - ```bash
-    python3 -m gunicorn -w 4 -b 0.0.0.0:8080 main:app --timeout 1800
+    TMPDIR="$PWD/tmp" python3 -m gunicorn -w 4 -b 0.0.0.0:8080 main:app --timeout 1800
     ```
 
 ## **How do I access it?**
